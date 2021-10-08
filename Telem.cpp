@@ -16,6 +16,8 @@ Telem::Telem(HardwareSerial &hs)
     last_heatbeat = 0;
     time_heartbeat = 0;
 
+    led_status = false;
+
     APdata.armed = false;
 
     // Array con los parámetros 
@@ -32,8 +34,14 @@ void Telem::begin() { _MAVSerial->begin(SERIAL_BAUD_TELEM); }
 void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
 {
 
+    // Led action
+    digitalWrite(LED_BUILTIN, (!led_status)? LOW : HIGH);   
+
     // LATIMOS cada segundo
     if (millis() >= time_heartbeat + HEARTBEAT_INTERVAL) {
+
+         digitalWrite(LED_BUILTIN, HIGH);
+
         // Enviamos heartbeat
         heartbeat();
 
@@ -42,6 +50,10 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
 
         // Incrementamos
         time_heartbeat += HEARTBEAT_INTERVAL;
+
+        // Latido led
+        led_status = (!led_status) ? true : false;
+
     }
 
     // ESCUCHAMOS
@@ -133,6 +145,21 @@ void Telem::armDisarm()
     _MAVSerial->write(buf, len);
 }
 
+void Telem::status_text(char * text)
+{
+
+    // Enviamos comando
+    mavlink_message_t msg;
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+    mavlink_msg_statustext_pack(system_id, component_id, &msg, 6, text, 0, 0);
+
+    uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+
+    _MAVSerial->write(buf, len);
+
+}
+
 // Params
 void Telem::param_value(mavlink_param_value_t param){
     // Enviamos parametro
@@ -196,5 +223,8 @@ void Telem::check_link()
 
         // Solicitamos sensor de distancia
         request_distance_sensor();
+
+        // Mandamos status text
+        status_text("XIAO Connected");
     }
 }

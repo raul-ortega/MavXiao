@@ -19,6 +19,7 @@ public:
   void run(void (*msgRecivedCallback)(mavlink_message_t msg));
   void armDisarm();
   void heartbeat();
+  void status_text(char * text);
   void param_value(mavlink_param_value_t param_value);
   void request_data_streams(uint8_t req_stream_id, uint16_t req_message_rate, uint8_t start_stop);
   void request_distance_sensor();
@@ -32,6 +33,7 @@ public:
 
   APdata_t APdata;
   boolean link;
+  boolean led_status;
 
 private:
   HardwareSerial *_MAVSerial;

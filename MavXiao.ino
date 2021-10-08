@@ -16,8 +16,13 @@ uint8_t cond_alt = 0;
 
 int eeAddress;
 
+
+
 void setup()
 {
+
+    // initialize digital pin LED_BUILTIN as an output.
+    pinMode(LED_BUILTIN, OUTPUT);
 
     // Serial Monitor ang Log
     Serial.begin(SERIAL_BAUD);
