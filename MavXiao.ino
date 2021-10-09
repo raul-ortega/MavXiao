@@ -26,10 +26,9 @@ void setup()
 
     // Serial Monitor ang Log
     Serial.begin(SERIAL_BAUD);
-    while (!Serial)
-        ;
 
-    delay(200);
+    // Esperamos Serial UP
+    delay(3000);
 
 // Log helper
 #ifndef DEBUG_MODE
