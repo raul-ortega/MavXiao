@@ -32,7 +32,7 @@ void setup()
     // Esperamos Serial UP
     delay(3000);
 
-// Log helper
+    // Log helper
 #ifndef DEBUG_MODE
     Log.begin(LOG_LEVEL_SILENT, &Serial);
 #else
