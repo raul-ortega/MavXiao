@@ -8,7 +8,8 @@ typedef struct
   uint32_t custom_mode;
   uint8_t base_mode;
   boolean armed;
-  uint16_t distance_sensor; 
+  uint16_t distance_sensor;
+  uint8_t landed_state; 
 } APdata_t;
 
 class Telem
@@ -23,6 +24,7 @@ public:
   void param_value(mavlink_param_value_t param_value);
   void request_data_streams(uint8_t req_stream_id, uint16_t req_message_rate, uint8_t start_stop);
   void request_distance_sensor();
+  void request_extended_sys_state();
 
   // Parámetros iniciales  
   mavlink_param_value_t cond_dis_sen = { COND_ALTITUDE, 2, 0, "COND_DIST_SEN", MAV_PARAM_TYPE_REAL32};

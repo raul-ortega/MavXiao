@@ -38,6 +38,7 @@
 // Intervals
 #define HEARTBEAT_INTERVAL 1000 //ms 1 vez por segundo
 #define DISTANCE_SENSOR_INTERVAL 200000
+#define EXTENDED_SYS_STATE_INTERVAL 200000
 
 // Time to lost link
 #define LOST_TIME 5 //s
