@@ -9,12 +9,28 @@ Telem mav(Serial1);
 int ds_values_count = 0;
 
 // Condition vars
-int cond_flight_modes[] = { PLANE_MODE_AUTO, PLANE_MODE_RTL, PLANE_MODE_QLAND, PLANE_MODE_QRTL };
-int cond_landed_states[] = { MAV_LANDED_STATE_LANDING, MAV_LANDED_STATE_IN_AIR };
+int cond_flight_modes[] = { 
+    PLANE_MODE_AUTO, 
+    PLANE_MODE_RTL, 
+    PLANE_MODE_QLAND, 
+    PLANE_MODE_QRTL,
+    PLANE_MODE_QLOITER
+};
+
 uint8_t cond_mode = 0;
 uint8_t cond_armed = 0;
 uint8_t cond_alt = 0;
 uint8_t cond_landed_state = 0;
+unsigned long last_noticed = 0;
+
+enum AC_STATE {
+  AC_LANDED = 0,
+  AC_TAKING_OFF,
+  AC_FLYING,
+  AC_LANDING
+};
+
+uint8_t ac_state = AC_LANDED;
 
 int eeAddress;
 
@@ -96,18 +112,44 @@ void loop()
     // Run mav
     mav.run(msgRecivedCallback);
 
+
     // EVALUATE DISARM ACTION
     if (cond_armed == 1 && cond_mode == 1 && cond_alt == 1 && cond_landed_state == 1) {
-        // Disarm
+        //Disarm
         mav.armDisarm();
 
         cond_armed = 0;
     }
 
+    // Máquina de estados
+    if (millis() - last_noticed >= 100) {
+        
+        last_noticed = millis();
+
+        if (ac_state == AC_LANDED && cond_armed == 0 && cond_alt == 1) {
+          cond_landed_state = 0;
+        } else if (ac_state == AC_LANDED && cond_armed == 1 && cond_alt == 0) {
+          ac_state = AC_TAKING_OFF;
+        } else if (ac_state == AC_TAKING_OFF && cond_armed == 1 && cond_alt == 0 ) {
+          ac_state = AC_FLYING;
+        } else if (ac_state == AC_FLYING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor <= LANDING_ALTITUDE) {
+          ac_state = AC_LANDING;
+        } else if (ac_state == AC_LANDING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor > LANDING_ALTITUDE) {
+          ac_state = AC_FLYING;
+        } else if (ac_state == AC_LANDING && cond_armed == 1 && cond_alt == 1) {
+          ac_state = AC_LANDED;
+          if  (cond_mode == 1)
+            cond_landed_state = 1; // we can disarm now
+        }
+
+        Log.notice(F("ac_state: %i cond_landed_state: %i armed: %i mode: %i alt: %i rangefinder: %i" CR), ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
+
+    }
+
     // Output
     if (mav.link) {
         //Log.notice(F("Mode: %i Armed: %T Range Finder : %icms Cond Mode: %i Cond Armed: %i Cond Range Finder: %i Filter Count: %i"CR) , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
-        Log.notice(F("Landed State: %i " CR) , mav.APdata.landed_state);
+        //Log.notice(F("Landed State: %i " CR) , mav.APdata.landed_state);
     }
 }
 
@@ -185,18 +227,5 @@ void msgRecivedCallback(mavlink_message_t msg)
 
         break;
 
-    case MAVLINK_MSG_ID_EXTENDED_SYS_STATE:
-
-        // CHECK COND landed state
-        for (byte i = 0; i < sizeof(cond_landed_states) / sizeof(cond_landed_states[0]); i++) {
-            if (cond_landed_states[i] == mav.APdata.landed_state) {
-                cond_landed_state = 1;
-                break;
-            } else {
-                cond_landed_state = 0;
-            }
-        }
-
-        break;
     }
 }

@@ -11,15 +11,19 @@
 // Use 0-2. Larger for more debugging messages
 #define FLASH_DEBUG       0
 
+// Enums
+#define FLIGHT_MODES_COUNT 5
+
 // SERIAL BAUDS
 #define SERIAL_BAUD 57600
 #define SERIAL_BAUD_TELEM 57600
 
-// COND VALUES
-
+// COND VALUES (PARAMS)
 #define COND_ALTITUDE 10 //cm
-#define DISTANCE_SENSOR_FILTER_COUNT 2
-#define FLIGHT_MODES_COUNT 4 
+#define DISTANCE_SENSOR_FILTER_COUNT 2 // tries
+#define LANDING_ALTITUDE 50 // from where conditionals works
+
+
 
 // MAVLINK
 
