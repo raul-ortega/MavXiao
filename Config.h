@@ -11,9 +11,6 @@
 // Use 0-2. Larger for more debugging messages
 #define FLASH_DEBUG       0
 
-// Enums
-#define FLIGHT_MODES_COUNT 5
-
 // SERIAL BAUDS
 #define SERIAL_BAUD 57600
 #define SERIAL_BAUD_TELEM 57600
@@ -52,5 +49,3 @@ const int WRITTEN_SIGNATURE = 0xBEEFDEED;
 const int START_ADDRESS     = 0;
 
 #endif
-
-
