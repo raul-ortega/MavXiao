@@ -14,7 +14,9 @@ int cond_flight_modes[] = {
     PLANE_MODE_RTL, 
     PLANE_MODE_QLAND, 
     PLANE_MODE_QRTL,
-    PLANE_MODE_QLOITER
+    PLANE_MODE_QLOITER,
+    PLANE_MODE_QHOVER,
+    PLANE_MODE_QSTABILIZE
 };
 
 uint8_t cond_mode = 0;
