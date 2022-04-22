@@ -256,6 +256,9 @@ void Telem::check_link()
         // Solicitamos sensor de distancia
         request_distance_sensor();
 
+        // Solicitamos altitud
+        request_altitude();
+
         // Mandamos status text
         status_text("XIAO Connected");
     }
