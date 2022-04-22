@@ -9,7 +9,7 @@ typedef struct
   uint8_t base_mode;
   boolean armed;
   uint16_t distance_sensor;
-  float altitude;
+  int16_t altitude;
   uint8_t landed_state; 
 } APdata_t;
 

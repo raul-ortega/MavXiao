@@ -126,7 +126,7 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
                     mavlink_altitude_t _altitude;
                     mavlink_msg_altitude_decode(&msg, &_altitude);
 
-                    APdata.altitude = _altitude.altitude_relative;
+                    APdata.altitude = (int16_t) _altitude.altitude_relative * 100;
                 }
                 
                 //  Ejecutamos función callback
