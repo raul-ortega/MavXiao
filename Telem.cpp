@@ -119,9 +119,16 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
 
                     APdata.distance_sensor = _distance_sensor.current_distance;
 
-                    break;                                     
+                    break;
+                                                         
+                case MAVLINK_MSG_ID_ALTITUDE: // #141: ALTITUDE
 
+                    mavlink_altitude_t _altitude;
+                    mavlink_msg_altitude_decode(&msg, &_altitude);
+
+                    APdata.altitude = _altitude.altitude_relative;
                 }
+                
                 //  Ejecutamos función callback
                 msgRecivedCallback(msg);
             }
@@ -209,6 +216,18 @@ void Telem::request_distance_sensor()
 
     mavlink_msg_command_long_pack(system_id, component_id, &msg, target_sysid, target_compid,
         MAV_CMD_SET_MESSAGE_INTERVAL, 0, MAVLINK_MSG_ID_DISTANCE_SENSOR, DISTANCE_SENSOR_INTERVAL, 0, 0, 0, 0, 0);
+    uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+
+    _MAVSerial->write(buf, len);
+}
+
+void Telem::request_altitude()
+{
+    mavlink_message_t msg;
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+    mavlink_msg_command_long_pack(system_id, component_id, &msg, target_sysid, target_compid,
+        MAV_CMD_SET_MESSAGE_INTERVAL, 0, MAVLINK_MSG_ID_ALTITUDE, ALTITUDE_INTERVAL, 0, 0, 0, 0, 0);
     uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
 
     _MAVSerial->write(buf, len);

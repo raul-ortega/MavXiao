@@ -19,7 +19,7 @@
 #define COND_ALTITUDE 10 //cm
 #define DISTANCE_SENSOR_FILTER_COUNT 2 // tries
 #define LANDING_ALTITUDE 50 // from where conditionals works
-
+#define ALTITUDE_DIFF 200 //cm Max difference allowed between relative altitude and distance sensor to disarm. If set to 0 relative alttitude is ignored.
 
 
 // MAVLINK
@@ -40,6 +40,7 @@
 #define HEARTBEAT_INTERVAL 1000 //ms 1 vez por segundo
 #define DISTANCE_SENSOR_INTERVAL 200000
 #define EXTENDED_SYS_STATE_INTERVAL 200000
+#define ALTITUDE_INTERVAL 200000
 
 // Time to lost link
 #define LOST_TIME 5 //s

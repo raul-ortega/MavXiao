@@ -213,21 +213,31 @@ void msgRecivedCallback(mavlink_message_t msg)
         break;
 
     case MAVLINK_MSG_ID_DISTANCE_SENSOR:
+    case MAVLINK_MSG_ID_ALTITUDE:
 
         // CHECK COND Alt
         if (mav.APdata.distance_sensor < int(mav.paramsList[0].param_value)) {
             if (ds_values_count >= int(mav.paramsList[1].param_value)) {
-                cond_alt = 1;
+                setCondAlt(1);
                 ds_values_count = int(mav.paramsList[1].param_value);
             } else {
                 ds_values_count++;
             }
         } else {
-            cond_alt = 0;
+            setCondAlt(0);
             ds_values_count = 0;
         }
 
         break;
 
     }
+}
+
+void setCondAlt(uint8_t value) {
+  if (value == 0) 
+    cond_alt = 0;
+  else if(ALTITUDE_DIFF > 0 && ((int16_t)mav.APdata.altitude - mav.APdata.distance_sensor >= ALTITUDE_DIFF)) {
+      cond_alt = 0;
+  } else
+      cond_alt = 1;
 }
