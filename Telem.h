@@ -28,9 +28,10 @@ public:
   void request_altitude();
 
   // Parámetros iniciales  
-  mavlink_param_value_t cond_dis_sen = { COND_ALTITUDE, 3, 0, "COND_DIST_SEN", MAV_PARAM_TYPE_REAL32};
-  mavlink_param_value_t dis_sen_cont = { DISTANCE_SENSOR_FILTER_COUNT, 3, 1, "DIST_SENS_CONT", MAV_PARAM_TYPE_REAL32};
-  mavlink_param_value_t landing_alt = { LANDING_ALTITUDE, 3, 2, "LANDING_ALT", MAV_PARAM_TYPE_REAL32};
+  mavlink_param_value_t cond_dis_sen = { COND_ALTITUDE, 4, 0, "COND_DIST_SEN", MAV_PARAM_TYPE_REAL32};
+  mavlink_param_value_t dis_sen_cont = { DISTANCE_SENSOR_FILTER_COUNT, 4, 1, "DIST_SENS_CONT", MAV_PARAM_TYPE_REAL32};
+  mavlink_param_value_t landing_alt = { LANDING_ALTITUDE, 4, 2, "LANDING_ALT", MAV_PARAM_TYPE_REAL32};
+  mavlink_param_value_t altitude_diff = { ALTITUDE_DIFF, 4, 3, "ALTITUDE_DIFF", MAV_PARAM_TYPE_REAL32};
 
   // Lista de parámetros en memoria
   mavlink_param_value_t paramsList[3];
