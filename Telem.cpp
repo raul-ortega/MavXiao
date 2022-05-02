@@ -24,7 +24,6 @@ Telem::Telem(HardwareSerial &hs)
     paramsList[0] = cond_dis_sen;
     paramsList[1] = dis_sen_cont;
     paramsList[2] = landing_alt;
-    paramsList[3] = altitude_diff;
 }
 
 /**
