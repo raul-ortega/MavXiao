@@ -6,7 +6,7 @@
 #include "./src/mavlink/ardupilotmega/mavlink.h"
 
 // DEBUG MODE
-#define DEBUG_MODE // Comentar para desactivar debug
+//#define DEBUG_MODE // Comentar para desactivar debug
 
 // Use 0-2. Larger for more debugging messages
 #define FLASH_DEBUG       0
