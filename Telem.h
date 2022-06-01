@@ -34,7 +34,7 @@ public:
   mavlink_param_value_t altitude_diff = { ALTITUDE_DIFF, 4, 3, "ALTITUDE_DIFF", MAV_PARAM_TYPE_REAL32};
 
   // Lista de parámetros en memoria
-  mavlink_param_value_t paramsList[3];
+  mavlink_param_value_t paramsList[4];
 
   APdata_t APdata;
   boolean link;
