@@ -134,9 +134,9 @@ void loop()
           ac_state = AC_TAKING_OFF;
         } else if (ac_state == AC_TAKING_OFF && cond_armed == 1 && cond_alt == 0 ) {
           ac_state = AC_FLYING;
-        } else if (ac_state == AC_FLYING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor <= LANDING_ALTITUDE) {
+        } else if (ac_state == AC_FLYING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor <= int(mav.paramsList[2].param_value)) {
           ac_state = AC_LANDING;
-        } else if (ac_state == AC_LANDING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor > LANDING_ALTITUDE) {
+        } else if (ac_state == AC_LANDING && cond_armed == 1 && cond_alt == 0 && mav.APdata.distance_sensor > int(mav.paramsList[2].param_value)) {
           ac_state = AC_FLYING;
         } else if (ac_state == AC_LANDING && cond_armed == 1 && cond_alt == 1) {
           ac_state = AC_LANDED;
