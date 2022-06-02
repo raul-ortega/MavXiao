@@ -144,7 +144,7 @@ void loop()
             cond_landed_state = 1; // we can disarm now
         }
 
-        Log.notice(F("ac_state: %i cond_landed_state: %i armed: %i mode: %i alt: %i rangefinder: %i" CR), ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
+        Log.notice(F("ac_state: %i cond_landed_state: %i armed: %i mode: %i alt: %i rangefinder: %i altitude: %i" CR), ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor, mav.APdata.altitude);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
 
     }
 
