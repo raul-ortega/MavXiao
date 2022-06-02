@@ -236,7 +236,7 @@ void msgRecivedCallback(mavlink_message_t msg)
 void setCondAlt(uint8_t value) {
   if (value == 0) 
     cond_alt = 0;
-  else if(int(mav.paramsList[3].param_value) > 0 && (mav.APdata.altitude - mav.APdata.distance_sensor >= int(mav.paramsList[3].param_value))) {
+  else if (int(mav.paramsList[3].param_value) > 0 && abs(mav.APdata.altitude - mav.APdata.distance_sensor) >= int(mav.paramsList[3].param_value)) {
       cond_alt = 0;
   } else
       cond_alt = 1;
