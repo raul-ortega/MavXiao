@@ -90,7 +90,6 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
             // MSGS que vienen de la FC
             if (msg.compid == target_compid) // Si recivimos de la pix o del mp
             {
-
                 switch (msg.msgid) {
 
                 case MAVLINK_MSG_ID_HEARTBEAT: // #0: Heartbeat
@@ -119,15 +118,16 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
                     mavlink_msg_distance_sensor_decode(&msg, &_distance_sensor);
 
                     APdata.distance_sensor = _distance_sensor.current_distance;
-
                     break;
                                                          
-                case MAVLINK_MSG_ID_ALTITUDE: // #141: ALTITUDE
+                case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: // #33
+                
+                    mavlink_global_position_int_t _position;
+                    mavlink_msg_global_position_int_decode(&msg, &_position);
 
-                    mavlink_altitude_t _altitude;
-                    mavlink_msg_altitude_decode(&msg, &_altitude);
-
-                    APdata.altitude = (int16_t) _altitude.altitude_relative * 100;
+                    APdata.altitude = (int16_t) (_position.relative_alt * 0.1f);
+                    
+                    break;
                 }
                 
                 //  Ejecutamos función callback
@@ -228,7 +228,7 @@ void Telem::request_altitude()
     uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
     mavlink_msg_command_long_pack(system_id, component_id, &msg, target_sysid, target_compid,
-        MAV_CMD_SET_MESSAGE_INTERVAL, 0, MAVLINK_MSG_ID_ALTITUDE, ALTITUDE_INTERVAL, 0, 0, 0, 0, 0);
+        MAV_CMD_SET_MESSAGE_INTERVAL, 0, MAVLINK_MSG_ID_GLOBAL_POSITION_INT, ALTITUDE_INTERVAL, 0, 0, 0, 0, 0);
     uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
 
     _MAVSerial->write(buf, len);
