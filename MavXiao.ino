@@ -213,7 +213,7 @@ void msgRecivedCallback(mavlink_message_t msg)
         break;
 
     case MAVLINK_MSG_ID_DISTANCE_SENSOR:
-    case MAVLINK_MSG_ID_ALTITUDE:
+    case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
 
         // CHECK COND Alt
         if (mav.APdata.distance_sensor < int(mav.paramsList[0].param_value)) {
