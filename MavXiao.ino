@@ -24,7 +24,6 @@ uint8_t cond_armed = 0;
 uint8_t cond_alt = 0;
 uint8_t cond_landed_state = 0;
 unsigned long last_noticed = 0;
-unsigned long msg_frequency = 0;
 
 enum AC_STATE {
   AC_LANDED = 0,
@@ -110,19 +109,13 @@ void setup()
     }
 
     last_noticed = millis();
-    msg_frequency = millis();
 }
 
 void loop()
 {
 
-    if (millis() - msg_frequency >= 10) {
-        
-        msg_frequency = millis();
-        // Run mav
-        mav.run(msgRecivedCallback);
-    }
-
+    // Run mav
+    mav.run(msgRecivedCallback);
 
     // EVALUATE DISARM ACTION
     if (cond_armed == 1 && cond_mode == 1 && cond_alt == 1 && cond_landed_state == 1) {

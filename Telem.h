@@ -51,5 +51,6 @@ private:
 
   unsigned long time_heartbeat;
   unsigned long last_heatbeat;
+  unsigned long msg_frequency;
 };
 #endif
