@@ -108,6 +108,8 @@ void setup()
         }
 
     }
+
+    last_noticed = millis();
     msg_frequency = millis();
 }
 
