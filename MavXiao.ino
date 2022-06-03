@@ -38,6 +38,7 @@ int eeAddress;
 
 
 
+
 void setup()
 {
 
@@ -52,7 +53,7 @@ void setup()
 
     // Log helper
 #ifndef DEBUG_MODE
-    Log.begin(LOG_LEVEL_SILENT, &Serial);
+    Log.begin(LOG_LEVEL_NOTICE, &Serial);
 #else
     Log.begin(LOG_LEVEL_VERBOSE, &Serial);
 #endif
@@ -69,12 +70,12 @@ void setup()
 
     // If the EEPROM doesn't store valid data, then no WRITTEN_SIGNATURE
     if (signature != WRITTEN_SIGNATURE) {
-        Log.notice("Sin Datos en eeprom" CR);
+        Log.notice("No valid data in EEPROM" CR);
 
         // Para guardar estado escritura
         EEPROM.put(START_ADDRESS, WRITTEN_SIGNATURE);
 
-        Log.notice("Guardamos parametros por defecto en memoria" CR);
+        Log.notice("Storing default parameters values" CR);
 
         // Nos desplazamos hasta la siguiente dirección libre de memoria
         eeAddress = START_ADDRESS + sizeof(WRITTEN_SIGNATURE);
@@ -89,13 +90,13 @@ void setup()
         // Persistimos
         if (!EEPROM.getCommitASAP())
         {
-          Serial.println("Persistiendo datos");
+          Log.notice("Committing data in EEPROM");
           EEPROM.commit();
         }
 
     } else {
 
-        Log.notice("Cargamos datos desde EEPROM" CR);
+        Log.notice("Loading parameters from EEPROM" CR);
 
         // Nos desplazamos hasta la primera posición
         eeAddress = START_ADDRESS + sizeof(WRITTEN_SIGNATURE);
@@ -144,14 +145,15 @@ void loop()
             cond_landed_state = 1; // we can disarm now
         }
 
-        Log.notice(F("ac_state: %i cond_landed_state: %i armed: %i mode: %i alt: %i rangefinder: %i altitude: %i" CR), ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor, mav.APdata.altitude);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
-
+        Log.verbose(F("ac_state: %i cond_landed_state: %i armed: %i mode: %i alt: %i rangefinder: %i altitude: %i" CR), ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor, mav.APdata.altitude);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
+        //if (ac_state == AC_LANDING)
+        //  GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "%i %i % %i %i %i %i", ac_state, cond_landed_state, cond_armed, cond_mode, cond_alt, mav.APdata.distance_sensor, mav.APdata.altitude);// mav.APdata.landed_state , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
     }
 
     // Output
     if (mav.link) {
-        //Log.notice(F("Mode: %i Armed: %T Range Finder : %icms Cond Mode: %i Cond Armed: %i Cond Range Finder: %i Filter Count: %i"CR) , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
-        //Log.notice(F("Landed State: %i " CR) , mav.APdata.landed_state);
+        //Log.verbose(F("Mode: %i Armed: %T Range Finder : %icms Cond Mode: %i Cond Armed: %i Cond Range Finder: %i Filter Count: %i"CR) , mav.APdata.custom_mode, mav.APdata.armed, mav.APdata.distance_sensor, cond_mode, cond_armed, cond_alt, ds_values_count);
+        //Log.verbose(F("Landed State: %i " CR) , mav.APdata.landed_state);
     }
 }
 
