@@ -59,89 +59,89 @@ void Telem::run(void (*msgRecivedCallback)(mavlink_message_t msg))
 
     }
 
-    
+    if (millis() - msg_frequency >= 10) {
    
-    // ESCUCHAMOS
-    mavlink_message_t msg;
-    mavlink_status_t status;
-
-    while (_MAVSerial->available() > 0) {
-        uint8_t c = _MAVSerial->read();
-
-        // Parseamos posibles msg
-        if (mavlink_parse_char(MAVLINK_COMM_0, c, &msg, &status)) {
-
-            // MSGS que vienen del MP
-            if (msg.sysid == GCS_SYSID) // Si recivimos de la pix o del mp
-            {
-
-                switch (msg.msgid) {
-
-                    case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-                    
-                        for(auto &param : paramsList){
-                            param_value(param);
-                        }
-                        
-                        break;                     
-
-                }
-                //  Ejecutamos función callback
-                msgRecivedCallback(msg);
-            }
-            
-            if (millis() - msg_frequency >= 10) {
-              // MSGS que vienen de la FC
-              if (msg.compid == target_compid) // Si recivimos de la pix o del mp
+      // ESCUCHAMOS
+      mavlink_message_t msg;
+      mavlink_status_t status;
+  
+      while (_MAVSerial->available() > 0) {
+          uint8_t c = _MAVSerial->read();
+  
+          // Parseamos posibles msg
+          if (mavlink_parse_char(MAVLINK_COMM_0, c, &msg, &status)) {
+  
+              // MSGS que vienen del MP
+              if (msg.sysid == GCS_SYSID) // Si recivimos de la pix o del mp
               {
+  
                   switch (msg.msgid) {
   
-                  case MAVLINK_MSG_ID_HEARTBEAT: // #0: Heartbeat
-  
-                      mavlink_heartbeat_t heartbeat;
-                      mavlink_msg_heartbeat_decode(&msg, &heartbeat);
-  
-                      // Capturamos datos para APdata
-                      APdata.custom_mode = heartbeat.custom_mode;
-                      APdata.base_mode = heartbeat.base_mode;
-  
-                      // Detectamos armado/desarmado desde la pix (no gusta, poco preciso)
-                      if (APdata.base_mode > 200)
-                          APdata.armed = true;
-                      else
-                          APdata.armed = false;
-  
-                      // Time to get
-                      last_heatbeat = millis();
-  
-                      break;
-  
-                  case MAVLINK_MSG_ID_DISTANCE_SENSOR: // #132: DISTANCE SENSOR
-  
-                      mavlink_distance_sensor_t _distance_sensor;
-                      mavlink_msg_distance_sensor_decode(&msg, &_distance_sensor);
-  
-                      APdata.distance_sensor = _distance_sensor.current_distance;
-                      break;
-                                                           
-                  case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: // #33
-                  
-                      mavlink_global_position_int_t _position;
-                      mavlink_msg_global_position_int_decode(&msg, &_position);
-  
-                      APdata.altitude = (int16_t) (_position.relative_alt * 0.1f);
+                      case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
                       
-                      break;
+                          for(auto &param : paramsList){
+                              param_value(param);
+                          }
+                          
+                          break;                     
+  
                   }
-                  
                   //  Ejecutamos función callback
                   msgRecivedCallback(msg);
               }
-              msg_frequency = millis();
-            }
-        }
+              
+              
+                // MSGS que vienen de la FC
+                if (msg.compid == target_compid) // Si recivimos de la pix o del mp
+                {
+                    switch (msg.msgid) {
+    
+                    case MAVLINK_MSG_ID_HEARTBEAT: // #0: Heartbeat
+    
+                        mavlink_heartbeat_t heartbeat;
+                        mavlink_msg_heartbeat_decode(&msg, &heartbeat);
+    
+                        // Capturamos datos para APdata
+                        APdata.custom_mode = heartbeat.custom_mode;
+                        APdata.base_mode = heartbeat.base_mode;
+    
+                        // Detectamos armado/desarmado desde la pix (no gusta, poco preciso)
+                        if (APdata.base_mode > 200)
+                            APdata.armed = true;
+                        else
+                            APdata.armed = false;
+    
+                        // Time to get
+                        last_heatbeat = millis();
+    
+                        break;
+    
+                    case MAVLINK_MSG_ID_DISTANCE_SENSOR: // #132: DISTANCE SENSOR
+    
+                        mavlink_distance_sensor_t _distance_sensor;
+                        mavlink_msg_distance_sensor_decode(&msg, &_distance_sensor);
+    
+                        APdata.distance_sensor = _distance_sensor.current_distance;
+                        break;
+                                                             
+                    case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: // #33
+                    
+                        mavlink_global_position_int_t _position;
+                        mavlink_msg_global_position_int_decode(&msg, &_position);
+    
+                        APdata.altitude = (int16_t) (_position.relative_alt * 0.1f);
+                        
+                        break;
+                    }
+                    
+                    //  Ejecutamos función callback
+                    msgRecivedCallback(msg);
+                
+              }
+          }
+      }
+      msg_frequency = millis();
     }
-  
 }
 
 // Latido
