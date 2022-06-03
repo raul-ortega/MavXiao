@@ -91,7 +91,7 @@ void setup()
         // Persistimos
         if (!EEPROM.getCommitASAP())
         {
-          Log.notice("Committing data in EEPROM");
+          Log.notice(F("Committing data in EEPROM"CR));
           EEPROM.commit();
         }
 
